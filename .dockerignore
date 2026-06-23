@@ -1,0 +1,17 @@
+.git
+.github
+charts
+docs/node_modules
+tests
+tmp
+ui
+*.md
+skaffold.yaml
+
+examples/**/.venv
+examples/**/node_modules
+examples/**/dist
+examples/**/.next
+examples/**/coverage
+examples/**/.cache
+examples/**/tmp

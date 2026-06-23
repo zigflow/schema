@@ -1,0 +1,24 @@
+header:
+  license:
+    spdx-id: Apache-2.0
+    copyright-owner: Zigflow authors <https://github.com/zigflow/schema/graphs/contributors>
+    copyright-year: 2025 - 2026
+  paths-ignore:
+    - "**/dist"
+    - "**/tmp"
+    - AUTHORS
+    - LICENSE
+    - "**/.*"
+    - "**/go.*"
+    - "**/*.{json,md,yml,yaml,txt,lock,toml,mdx,asc}"
+    - "**/.gitkeep"
+  comment: on-failure
+  language:
+    Go:
+      extensions:
+        - ".go"
+      comment_style_id: SlashAsterisk
+
+dependency:
+  files:
+    - go.mod # If this is a Go project.

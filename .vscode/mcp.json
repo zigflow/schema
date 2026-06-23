@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "zigflow": {
+      "type": "http",
+      "url": "https://mcp.zigflow.dev"
+    }
+  }
+}

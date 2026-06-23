@@ -1,0 +1,20 @@
+{
+  "template": "https://github.com/mrsimonemms/new",
+  "commit": "6f1459d0cc97b9a3e0fa01a996a7af83fefe02aa",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "schema",
+      "description": "Public schema for Zigflow",
+      "author": "Zigflow authors <https://github.com/zigflow/schema/graphs/contributors>",
+      "repo": "github.com/zigflow/schema",
+      "use_viper": false,
+      "_template": "https://github.com/mrsimonemms/new",
+      "_commit": "6f1459d0cc97b9a3e0fa01a996a7af83fefe02aa"
+    }
+  },
+  "directory": "golang-cobra",
+  "skip": [
+    ".git"
+  ]
+}
