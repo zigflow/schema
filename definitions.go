@@ -1010,7 +1010,7 @@ var runTaskDefinition = &jsonschema.Schema{
 									Title:                 "Container",
 									Description:           "The configuration of the container to run.",
 									UnevaluatedProperties: falseSchema(),
-									Required:              []string{"image"},
+									Required:              []string{"image", "pullPolicy"},
 									Properties: map[string]*jsonschema.Schema{
 										propArguments: {
 											Type:        typeArray,
@@ -1042,6 +1042,12 @@ var runTaskDefinition = &jsonschema.Schema{
 											Type:        typeString,
 											Title:       "ContainerName",
 											Description: "A runtime expression, if any, used to give specific name to the container.",
+										},
+										"pullPolicy": {
+											Type:        typeString,
+											Title:       "PullPolicy",
+											Description: "Pull policy for the container image",
+											Enum:        []any{"always", "never", "ifNotPresent"},
 										},
 										"volumes": {
 											Type:        typeObject,
