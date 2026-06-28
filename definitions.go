@@ -187,7 +187,7 @@ var callTaskDefinition = &jsonschema.Schema{
 					Properties: map[string]*jsonschema.Schema{
 						propCall: {
 							Type:  typeString,
-							Const: utils.Ptr[any]("http"),
+							Const: utils.Ptr[any](propHttp),
 						},
 						propWith: {
 							Type:                  typeObject,
@@ -247,6 +247,150 @@ var callTaskDefinition = &jsonschema.Schema{
 									Type:        typeBoolean,
 									Title:       "HttpRedirect",
 									Description: "Specifies whether redirection status codes (`300-399`) should be treated as errors.",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Type:                  typeObject,
+			Title:                 "CallMCP",
+			Description:           "Defines the MCP call to perform.",
+			UnevaluatedProperties: falseSchema(),
+			Required:              []string{propCall, propWith},
+			AllOf: []*jsonschema.Schema{
+				{Ref: SchemaRef("taskBase")},
+				{
+					Properties: map[string]*jsonschema.Schema{
+						propCall: {
+							Type:  typeString,
+							Const: utils.Ptr[any]("mcp"),
+						},
+						propWith: {
+							Type:                  typeObject,
+							Title:                 "MCPArguments",
+							Description:           "The MCP call arguments.",
+							UnevaluatedProperties: falseSchema(),
+							Required:              []string{propMethod, "transport"},
+							Properties: map[string]*jsonschema.Schema{
+								propMethod: {
+									Type: typeString,
+									Enum: []any{
+										"tools/list",
+										"tools/call",
+										"prompts/list",
+										"prompts/get",
+										"resources/list",
+										"resources/read",
+										"resources/templates/list",
+									},
+									Title:       "McpMethod",
+									Description: "The MCP method to call.",
+								},
+								"parameters": {
+									Title:       "McpMethodParameters",
+									Description: "The MCP method parameters.",
+									OneOf: []*jsonschema.Schema{
+										{
+											Type:                 typeObject,
+											AdditionalProperties: falseSchema(),
+										},
+										{
+											Type: typeString,
+										},
+									},
+								},
+								"timeout": {
+									Title:       "McpCallTimeout",
+									Description: "The duration after which the MCP call times out.",
+									Ref:         SchemaRef("duration"),
+								},
+								"transport": {
+									Type:        typeObject,
+									Title:       "McpCallTransport",
+									Description: "The transport to use to perform the MCP call.",
+									Properties: map[string]*jsonschema.Schema{
+										propHttp: {
+											Type:        typeObject,
+											Title:       "McpHttpTransport",
+											Description: "The definition of the HTTP transport to use.",
+											Required:    []string{"endpoint"},
+											Properties: map[string]*jsonschema.Schema{
+												"endpoint": {
+													Ref:         SchemaRef("endpoint"),
+													Title:       "McpHttpTransportEndpoint",
+													Description: "The MCP server endpoint to connect to.",
+												},
+												"headers": {
+													Type: typeObject,
+													AdditionalProperties: &jsonschema.Schema{
+														Type: typeString,
+													},
+													Title:       "McpHttpTransportHeaders",
+													Description: "A key/value mapping of the HTTP headers to send with requests, if any.",
+												},
+											},
+										},
+										"stdio": {
+											Type:        typeObject,
+											Title:       "McpStdioTransport",
+											Description: "The definition of the STDIO transport to use.",
+											Required:    []string{"command"},
+											Properties: map[string]*jsonschema.Schema{
+												"command": {
+													Type:        typeString,
+													Title:       "McpStdioTransportCommand",
+													Description: "The command used to run the MCP server.",
+												},
+												"arguments": {
+													Type: typeArray,
+													Items: &jsonschema.Schema{
+														Type: typeString,
+													},
+													Title:       "McpStdioTransportArguments",
+													Description: "An optional list of arguments to pass to the command.",
+												},
+												"environment": {
+													Type: typeObject,
+													AdditionalProperties: &jsonschema.Schema{
+														Type: typeString,
+													},
+													Title:       "McpStdioTransportEnvironment",
+													Description: "A key/value mapping, if any, of environment variables used to configure the MCP server.",
+												},
+											},
+										},
+										"options": {
+											Type: typeObject,
+											AdditionalProperties: &jsonschema.Schema{
+												Type: typeObject,
+											},
+										},
+									},
+									OneOf: []*jsonschema.Schema{
+										{Required: []string{propHttp}},
+										{Required: []string{"stdio"}},
+									},
+								},
+								"client": {
+									Type:        typeObject,
+									Title:       "McpClient",
+									Description: "Describes the client used to perform the MCP call.",
+									Required:    []string{propName, propVersion},
+									Properties: map[string]*jsonschema.Schema{
+										propName: {
+											Type:        typeString,
+											Title:       "McpClientName",
+											Description: "The name of the client used to connect to the MCP server.",
+										},
+										propVersion: {
+											Type:        typeString,
+											Title:       "McpClientVersion",
+											Description: "The version of the client used to connect to the MCP server.",
+										},
+									},
 								},
 							},
 						},

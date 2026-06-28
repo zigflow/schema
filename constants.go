@@ -123,4 +123,5 @@ const (
 	propThen                 = "then"
 	propWorkflowType         = "workflowType"
 	propVersion              = "version"
+	propHttp                 = "http"
 )
