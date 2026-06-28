@@ -246,11 +246,11 @@ func TestCallTaskDefinitionVariants(t *testing.T) {
 		consts = append(consts, callConst(s))
 	}
 
-	for _, want := range []string{"activity", "grpc", "http"} {
+	for _, want := range []string{"activity", "grpc", "http", "mcp"} {
 		assert.True(t, slices.Contains(consts, want), "callTask should support %q", want)
 	}
 
-	for _, absent := range []string{"asyncapi", "openapi", "mcp", "a2a"} {
+	for _, absent := range []string{"asyncapi", "openapi", "a2a"} {
 		assert.False(t, slices.Contains(consts, absent), "callTask must not support %q", absent)
 	}
 }
