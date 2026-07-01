@@ -35,35 +35,6 @@ jobs:
           go mod tidy
           go generate ./...
 
-      - name: Set up Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
-          cache: npm
-          cache-dependency-path: |
-            docs/package-lock.json
-            scripts/package-lock.json
-            examples/**/package-lock.json
-
-      - name: Discover Node packages
-        run: |
-          find docs scripts examples \
-            -name package.json \
-            -not -path "*/node_modules/*" \
-            -exec dirname {} \; \
-            | sort > /tmp/node-packages.txt
-
-          echo "Discovered Node packages:"
-          cat /tmp/node-packages.txt
-
-      - name: Update Node dependencies
-        run: |
-          while IFS= read -r dir; do
-            echo "Updating npm dependencies in $dir"
-            npm --prefix "$dir" install
-            npm --prefix "$dir" update
-          done < /tmp/node-packages.txt
-
       - name: Create pull request
         uses: peter-evans/create-pull-request@v8
         with:
@@ -74,9 +45,6 @@ jobs:
 
             - Pre-commit dependencies updated via `pre-commit autoupdate`
             - Go dependencies updated via `go get -u ./...` and `go mod tidy`
-            - Docs npm dependencies updated via `npm update` in `docs`
-            - Examples npm dependencies updated via `npm update` in `examples`
-            - Scripts npm dependencies updated via `npm update` in `scripts`
           branch: chore/update-deps
           delete-branch: true
           labels: dependencies
