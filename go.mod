@@ -9,7 +9,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
-	github.com/zigflow/zigflow v0.14.0
+	github.com/zigflow/zigflow v0.14.1
 	sigs.k8s.io/yaml v1.6.0
 )
 
@@ -51,6 +51,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
+	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/sagikazarmark/locafero v0.12.0 // indirect
 	github.com/serverlessworkflow/sdk-go/v3 v3.4.0 // indirect
 	github.com/spf13/afero v1.15.0 // indirect
