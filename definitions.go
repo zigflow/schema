@@ -38,6 +38,7 @@ func buildDefinitions() map[string]*jsonschema.Schema {
 		"eventProperties":          eventPropertiesDefinition,
 		propExport:                 exportDefinition,
 		"externalResource":         externalResourceDefinition,
+		"emitTask":                 emitTaskDefinition,
 		"flowDirective":            flowDirectiveDefinition,
 		"forkTask":                 forkTaskDefinition,
 		"forTask":                  forTaskDefinition,
@@ -760,6 +761,45 @@ var externalResourceDefinition = &jsonschema.Schema{
 	},
 }
 
+var emitTaskDefinition = &jsonschema.Schema{
+	Type:  typeObject,
+	Title: "EmitTask",
+	Description: "Allows workflows to publish events to event brokers or messaging systems, " +
+		"facilitating communication and coordination between different components and services.",
+	Required:              []string{"emit"},
+	UnevaluatedProperties: falseSchema(),
+	AllOf: []*jsonschema.Schema{
+		{Ref: SchemaRef("taskBase")},
+		{
+			Properties: map[string]*jsonschema.Schema{
+				"emit": {
+					Type:                  typeObject,
+					Title:                 "EmitTaskConfiguration",
+					Description:           "The configuration of an event's emission.",
+					UnevaluatedProperties: falseSchema(),
+					Required:              []string{"event"},
+					Properties: map[string]*jsonschema.Schema{
+						"event": {
+							AdditionalProperties: trueSchema(),
+							Type:                 typeObject,
+							Title:                "EmitEventDefinition",
+							Description:          "The definition of the event to emit.",
+							Properties: map[string]*jsonschema.Schema{
+								"with": {
+									Ref:         SchemaRef("eventProperties"),
+									Title:       "EmitEventWith",
+									Description: "Defines the properties of event to emit.",
+									Required:    []string{"type"},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	},
+}
+
 var flowDirectiveDefinition = &jsonschema.Schema{
 	Title:       "FlowDirective",
 	Description: "Represents different transition options for a workflow.",
@@ -1344,6 +1384,7 @@ var taskDefinition = &jsonschema.Schema{
 	OneOf: []*jsonschema.Schema{
 		{Ref: SchemaRef("callTask")},
 		{Ref: SchemaRef("doTask")},
+		{Ref: SchemaRef("emitTask")},
 		{Ref: SchemaRef("forTask")},
 		{Ref: SchemaRef("forkTask")},
 		{Ref: SchemaRef("listenTask")},
