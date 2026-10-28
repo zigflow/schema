@@ -112,7 +112,6 @@ const (
 	propTaskQueue            = "taskQueue"
 	propType                 = "type"
 	propScheduleWorkflowName = "scheduleWorkflowName"
-	propScheduleWorkflowType = "scheduleWorkflowType"
 	propScheduleID           = "scheduleId"
 	propScheduleInput        = "scheduleInput"
 	propSeconds              = "seconds"
