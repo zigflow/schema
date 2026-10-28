@@ -413,11 +413,19 @@ var documentMetadataDefinition = &jsonschema.Schema{
 			Title:       "ContinueAsNewMaxHistoryLength",
 			Description: "Allows you to test the Continue-As-New functionality by specifying the max history length before triggering.",
 		},
+		propScheduleWorkflowType: {
+			Type:  typeString,
+			Title: "ScheduleWorkflowType",
+			Description: "The workflow type the schedule starts: the document.workflowType or a top-level Do task. " +
+				"Defaults to document.workflowType; required when every top-level task is a Do task.",
+			MinLength: utils.Ptr(1),
+		},
 		propScheduleWorkflowName: {
 			Type:        typeString,
 			Title:       "ScheduleWorkflowName",
-			Description: "Set the workflow name to trigger - this will either be the document.workflowType or the Do task",
+			Description: "Deprecated: use scheduleWorkflowType.",
 			MinLength:   utils.Ptr(1),
+			Deprecated:  true,
 		},
 		propScheduleID: {
 			Type:        typeString,

@@ -36,22 +36,6 @@ func BuildSchema(version, format string) (*jsonschema.Schema, error) {
 		Required:    []string{propDo, propDocument},
 		Properties:  schemaProperties,
 		Defs:        buildDefinitions(),
-		If: &jsonschema.Schema{
-			Required: []string{"schedule"},
-		},
-		Then: &jsonschema.Schema{
-			Required: []string{propDocument},
-			Properties: map[string]*jsonschema.Schema{
-				propDocument: {
-					Required: []string{propMetadata},
-					Properties: map[string]*jsonschema.Schema{
-						propMetadata: {
-							Required: []string{propScheduleWorkflowName},
-						},
-					},
-				},
-			},
-		},
 	}
 
 	// Validate the generated schema

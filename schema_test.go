@@ -23,7 +23,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const testCronExpr = "0 0 * * *"
+const (
+	testCronExpr     = "0 0 * * *"
+	testWorkflowType = "my-workflow"
+)
 
 // minimalWorkflow returns a minimal structurally valid workflow document.
 // It is used as a baseline for validation tests so that each test only
@@ -97,41 +100,28 @@ func TestSchema_DocumentFields(t *testing.T) {
 	})
 }
 
-// TestSchema_ScheduleRequiresScheduleWorkflowName verifies the conditional
-// if/then rule: when top-level schedule is present, document.metadata must
-// exist and contain scheduleWorkflowName.
-func TestSchema_ScheduleRequiresScheduleWorkflowName(t *testing.T) {
+// TestSchema_ScheduleNeedsNoWorkflowKey verifies that a schedule validates
+// without a workflow key: the runtime defaults it to document.workflowType, and
+// only it can tell when that does not apply (every top-level task a Do task).
+func TestSchema_ScheduleNeedsNoWorkflowKey(t *testing.T) {
 	resolved := resolvedTestSchema(t)
 
-	t.Run("schedule present without document.metadata is rejected", func(t *testing.T) {
-		doc := minimalWorkflow()
-		doc["schedule"] = map[string]any{propCron: testCronExpr}
+	for name, meta := range map[string]map[string]any{
+		"no document.metadata":   nil,
+		"metadata without a key": {propScheduleID: "my-schedule"},
+		"the workflow type key":  {propScheduleWorkflowType: testWorkflowType},
+		"the deprecated alias":   {propScheduleWorkflowName: testWorkflowType},
+	} {
+		t.Run(name, func(t *testing.T) {
+			doc := minimalWorkflow()
+			doc["schedule"] = map[string]any{propCron: testCronExpr}
+			if meta != nil {
+				doc["document"].(map[string]any)["metadata"] = meta
+			}
 
-		err := resolved.Validate(doc)
-		assert.Error(t, err, "schedule without document.metadata must fail validation")
-	})
-
-	t.Run("schedule present with document.metadata but missing scheduleWorkflowName is rejected", func(t *testing.T) {
-		doc := minimalWorkflow()
-		doc["schedule"] = map[string]any{propCron: testCronExpr}
-		doc["document"].(map[string]any)["metadata"] = map[string]any{
-			propScheduleID: "my-schedule",
-		}
-
-		err := resolved.Validate(doc)
-		assert.Error(t, err, "schedule with document.metadata but no scheduleWorkflowName must fail validation")
-	})
-
-	t.Run("schedule present with valid document.metadata.scheduleWorkflowName is accepted", func(t *testing.T) {
-		doc := minimalWorkflow()
-		doc["schedule"] = map[string]any{propCron: testCronExpr}
-		doc["document"].(map[string]any)["metadata"] = map[string]any{
-			propScheduleWorkflowName: "my-workflow",
-		}
-
-		err := resolved.Validate(doc)
-		assert.NoError(t, err, "schedule with valid scheduleWorkflowName must pass validation")
-	})
+			assert.NoError(t, resolved.Validate(doc), "a schedule must validate with %s", name)
+		})
+	}
 }
 
 // TestSchema_RejectsUnknownTopLevelProperties verifies that the root schema
