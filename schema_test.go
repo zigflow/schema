@@ -107,10 +107,10 @@ func TestSchema_ScheduleNeedsNoWorkflowKey(t *testing.T) {
 	resolved := resolvedTestSchema(t)
 
 	for name, meta := range map[string]map[string]any{
-		"no document.metadata":      nil,
-		"metadata without a key":    {propScheduleID: "my-schedule"},
-		"the workflow type key":     {propScheduleWorkflowType: testWorkflowType},
-		"the old key, now unlisted": {"scheduleWorkflowName": testWorkflowType},
+		"no document.metadata":   nil,
+		"metadata without a key": {propScheduleID: "my-schedule"},
+		"the workflow type key":  {propScheduleWorkflowType: testWorkflowType},
+		"the deprecated alias":   {propScheduleWorkflowName: testWorkflowType},
 	} {
 		t.Run(name, func(t *testing.T) {
 			doc := minimalWorkflow()

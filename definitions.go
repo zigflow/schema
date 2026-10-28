@@ -420,6 +420,13 @@ var documentMetadataDefinition = &jsonschema.Schema{
 				"Defaults to document.workflowType; required when every top-level task is a Do task.",
 			MinLength: utils.Ptr(1),
 		},
+		propScheduleWorkflowName: {
+			Type:        typeString,
+			Title:       "ScheduleWorkflowName",
+			Description: "Deprecated: use scheduleWorkflowType.",
+			MinLength:   utils.Ptr(1),
+			Deprecated:  true,
+		},
 		propScheduleID: {
 			Type:        typeString,
 			Title:       "ScheduleID",

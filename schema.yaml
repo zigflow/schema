@@ -305,6 +305,12 @@ $defs:
         description: Set the input.
         title: ScheduleInput
         type: array
+      scheduleWorkflowName:
+        deprecated: true
+        description: 'Deprecated: use scheduleWorkflowType.'
+        minLength: 1
+        title: ScheduleWorkflowName
+        type: string
       scheduleWorkflowType:
         description: 'The workflow type the schedule starts: the document.workflowType
           or a top-level Do task. Defaults to document.workflowType; required when
