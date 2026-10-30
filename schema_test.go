@@ -17,6 +17,7 @@
 package schema
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -47,6 +48,20 @@ func minimalWorkflow() map[string]any {
 			},
 		},
 	}
+}
+
+func runWorkflowDoc(workflow map[string]any) map[string]any {
+	doc := minimalWorkflow()
+	doc[propDo] = []any{
+		map[string]any{
+			"callChild": map[string]any{
+				"run": map[string]any{
+					"workflow": workflow,
+				},
+			},
+		},
+	}
+	return doc
 }
 
 // TestSchema_DocumentFields verifies that the document schema accepts the
@@ -138,4 +153,100 @@ func TestSchema_RejectsUnknownTopLevelProperties(t *testing.T) {
 		err := resolved.Validate(minimalWorkflow())
 		assert.NoError(t, err, "document with only known top-level properties should pass validation")
 	})
+}
+
+func TestSchema_RunWorkflowTaskQueue(t *testing.T) {
+	resolved := resolvedTestSchema(t)
+	tests := []struct {
+		name       string
+		workflow   map[string]any
+		awaitFalse bool
+		wantError  bool
+	}{
+		{
+			name:     "without taskQueue is accepted",
+			workflow: map[string]any{propType: testWorkflowType},
+		},
+		{
+			name:     "with taskQueue is accepted",
+			workflow: map[string]any{propType: testWorkflowType, propTaskQueue: "other-queue"},
+		},
+		{
+			name:     "orders.v2 is accepted",
+			workflow: map[string]any{propType: testWorkflowType, propTaskQueue: "orders.v2"},
+		},
+		{
+			name:     "test_workflow is accepted",
+			workflow: map[string]any{propType: testWorkflowType, propTaskQueue: "test_workflow"},
+		},
+		{
+			name:     "single-character name is accepted",
+			workflow: map[string]any{propType: testWorkflowType, propTaskQueue: "a"},
+		},
+		{
+			name: "64-character name is accepted",
+			workflow: map[string]any{
+				propType:      testWorkflowType,
+				propTaskQueue: strings.Repeat("a", 64),
+			},
+		},
+		{
+			name: "taskQueue with input and await false is accepted",
+			workflow: map[string]any{
+				propType:      testWorkflowType,
+				propTaskQueue: "other-queue",
+				propInput:     map[string]any{"a": 1},
+			},
+			awaitFalse: true,
+		},
+		{
+			name: "empty taskQueue is rejected",
+			workflow: map[string]any{
+				propType:      testWorkflowType,
+				propTaskQueue: "",
+			},
+			wantError: true,
+		},
+		{
+			name: "integer taskQueue is rejected",
+			workflow: map[string]any{
+				propType:      testWorkflowType,
+				propTaskQueue: 123,
+			},
+			wantError: true,
+		},
+		{
+			name: "object taskQueue is rejected",
+			workflow: map[string]any{
+				propType:      testWorkflowType,
+				propTaskQueue: map[string]any{},
+			},
+			wantError: true,
+		},
+		{
+			name: "unknown sibling property is rejected",
+			workflow: map[string]any{
+				propType: testWorkflowType,
+				"queue":  "x",
+			},
+			wantError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			doc := runWorkflowDoc(tt.workflow)
+			if tt.awaitFalse {
+				task := doc[propDo].([]any)[0].(map[string]any)["callChild"].(map[string]any)
+				task["run"].(map[string]any)["await"] = false
+			}
+
+			err := resolved.Validate(doc)
+			if tt.wantError {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
 }

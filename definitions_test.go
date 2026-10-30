@@ -265,6 +265,29 @@ func TestRunTaskDefinitionVariants(t *testing.T) {
 	}
 }
 
+func TestRunWorkflowTaskQueueProperty(t *testing.T) {
+	var workflow *jsonschema.Schema
+	for _, variant := range runTaskDefinition.AllOf[1].Properties["run"].OneOf {
+		if variant.Title != "RunWorkflow" {
+			continue
+		}
+		workflow = variant.Properties["workflow"]
+		break
+	}
+
+	require.NotNil(t, workflow, "RunWorkflow should define a workflow property")
+	require.Contains(t, workflow.Properties, propTaskQueue)
+	taskQueue := workflow.Properties[propTaskQueue]
+	require.NotNil(t, taskQueue)
+
+	assert.Equal(t, typeString, taskQueue.Type)
+	assert.Equal(t, "SubflowTaskQueue", taskQueue.Title)
+	require.NotNil(t, taskQueue.MinLength)
+	assert.Equal(t, 1, *taskQueue.MinLength)
+	assert.Empty(t, taskQueue.Pattern)
+	assert.Equal(t, []string{propType}, workflow.Required)
+}
+
 // TestSchemaDefinitionInlineOnly verifies that schemaDefinition supports only
 // the inline document form and not the external resource form.
 func TestSchemaDefinitionInlineOnly(t *testing.T) {

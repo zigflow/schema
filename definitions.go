@@ -1185,6 +1185,13 @@ var runTaskDefinition = &jsonschema.Schema{
 												"The value should be validated against the target workflow's input schema, if specified.",
 											AdditionalProperties: trueSchema(),
 										},
+										propTaskQueue: {
+											Type:      typeString,
+											Title:     "SubflowTaskQueue",
+											MinLength: utils.Ptr(1),
+											Description: "The Temporal task queue to start the child workflow on. " +
+												"If not set, the child workflow runs on the parent workflow's task queue.",
+										},
 										propType: {
 											Type:        typeString,
 											Title:       "SubflowType",
