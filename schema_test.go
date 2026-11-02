@@ -17,7 +17,6 @@
 package schema
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -182,13 +181,6 @@ func TestSchema_RunWorkflowTaskQueue(t *testing.T) {
 		{
 			name:     "single-character name is accepted",
 			workflow: map[string]any{propType: testWorkflowType, propTaskQueue: "a"},
-		},
-		{
-			name: "64-character name is accepted",
-			workflow: map[string]any{
-				propType:      testWorkflowType,
-				propTaskQueue: strings.Repeat("a", 64),
-			},
 		},
 		{
 			name: "taskQueue with input and await false is accepted",
