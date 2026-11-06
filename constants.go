@@ -111,7 +111,6 @@ const (
 	propRetryPolicy          = "retryPolicy"
 	propTaskQueue            = "taskQueue"
 	propType                 = "type"
-	propScheduleWorkflowName = "scheduleWorkflowName"
 	propScheduleWorkflowType = "scheduleWorkflowType"
 	propScheduleID           = "scheduleId"
 	propScheduleInput        = "scheduleInput"
@@ -124,4 +123,5 @@ const (
 	propThen                 = "then"
 	propWorkflowType         = "workflowType"
 	propVersion              = "version"
+	propHttp                 = "http"
 )
