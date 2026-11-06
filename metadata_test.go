@@ -158,7 +158,6 @@ func TestDocumentMetadataDefinitionShape(t *testing.T) {
 
 	for _, key := range []string{
 		propCanMaxHistory,
-		propScheduleWorkflowName,
 		propScheduleWorkflowType,
 		propScheduleID,
 		propScheduleInput,
@@ -168,8 +167,6 @@ func TestDocumentMetadataDefinitionShape(t *testing.T) {
 	}
 
 	assert.Equal(t, typeInteger, def.Properties[propCanMaxHistory].Type)
-	assert.Equal(t, typeString, def.Properties[propScheduleWorkflowName].Type)
-	assert.True(t, def.Properties[propScheduleWorkflowName].Deprecated, "scheduleWorkflowName is a deprecated alias")
 	assert.Equal(t, typeString, def.Properties[propScheduleWorkflowType].Type)
 	assert.False(t, def.Properties[propScheduleWorkflowType].Deprecated)
 	assert.Equal(t, typeString, def.Properties[propScheduleID].Type)
@@ -228,10 +225,6 @@ func TestDocumentMetadata_Validation(t *testing.T) {
 	}{
 		// ---- valid cases ----
 		{
-			name: "scheduleWorkflowName string is accepted",
-			meta: map[string]any{"scheduleWorkflowName": testWorkflowType},
-		},
-		{
 			name: "scheduleWorkflowType string is accepted",
 			meta: map[string]any{propScheduleWorkflowType: testWorkflowType},
 		},
@@ -269,11 +262,6 @@ func TestDocumentMetadata_Validation(t *testing.T) {
 		},
 
 		// ---- invalid cases ----
-		{
-			name:        "scheduleWorkflowName as integer is rejected",
-			meta:        map[string]any{"scheduleWorkflowName": 42},
-			expectError: true,
-		},
 		{
 			name:        "scheduleWorkflowType as integer is rejected",
 			meta:        map[string]any{propScheduleWorkflowType: 42},

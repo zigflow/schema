@@ -517,13 +517,6 @@
           "title": "ScheduleInput",
           "description": "Set the input."
         },
-        "scheduleWorkflowName": {
-          "type": "string",
-          "title": "ScheduleWorkflowName",
-          "description": "Deprecated: use scheduleWorkflowType.",
-          "deprecated": true,
-          "minLength": 1
-        },
         "scheduleWorkflowType": {
           "type": "string",
           "title": "ScheduleWorkflowType",
